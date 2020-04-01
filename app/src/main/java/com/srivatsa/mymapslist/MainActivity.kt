@@ -1,5 +1,7 @@
 package com.srivatsa.mymapslist
 
+import android.app.Activity
+import android.app.Instrumentation
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -10,6 +12,8 @@ import com.srivatsa.mymapslist.models.UserMap
 import kotlinx.android.synthetic.main.activity_main.*
 
 const val EXTRA_USER_MAP="EXTRA_USER_MAP"
+private const val REQUEST_CODE=1234
+const val EXTRA_MAP_TITLE="EXTRA_MAP_TITLE"
 
 private const val TAG="MainActivity"
 class MainActivity : AppCompatActivity() {
@@ -31,14 +35,23 @@ class MainActivity : AppCompatActivity() {
                 val i=Intent(this@MainActivity, DisplayMapActivity::class.java)
                 i.putExtra(EXTRA_USER_MAP,userMaps[position])
                 startActivity(i)
-
             }
 
         })
-
-
-
+       fabCreateMap.setOnClickListener {
+           Log.i(TAG,"Tap on FAB")
+           val intent=Intent(this@MainActivity, CreateMapsActivity::class.java)
+           intent.putExtra(EXTRA_MAP_TITLE, "new map name")
+           startActivityForResult(intent, REQUEST_CODE)
+       }
     }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode== REQUEST_CODE && resultCode==Activity.RESULT_OK)
+        super.onActivityResult(requestCode, resultCode, data)
+    }
+
+
     private fun generateSampleData(): List<UserMap> {
         return listOf(
             UserMap(
