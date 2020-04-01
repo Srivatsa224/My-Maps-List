@@ -1,10 +1,14 @@
 package com.srivatsa.mymapslist
 
+import android.app.Activity
 import android.content.DialogInterface
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.EditText
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -18,6 +22,8 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
+import com.srivatsa.mymapslist.models.Place
+import com.srivatsa.mymapslist.models.UserMap
 
 private const val TAG="CreateMapsActivity"
 class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
@@ -44,6 +50,30 @@ class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_create_map, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        // Check that `item` is the save menu option
+        if (item.itemId == R.id.im_save) {
+            Log.i(TAG, "Tapped on save!")
+            if (markers.isEmpty()) {
+                Toast.makeText(this, "There must be at least one marker on the map", Toast.LENGTH_LONG).show()
+                return true
+            }
+            val places = markers.map { marker -> Place(marker.title, marker.snippet, marker.position.latitude, marker.position.longitude) }
+            val userMap = UserMap(intent.getStringExtra(EXTRA_MAP_TITLE), places)
+            val data = Intent()
+            data.putExtra(EXTRA_USER_MAP, userMap)
+            setResult(Activity.RESULT_OK, data)
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
      override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -58,9 +88,9 @@ class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
 
         // Add a marker in Sydney and move the camera
-        val sydney = LatLng(-34.0, 151.0)
-        mMap.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+        val siliconValley = LatLng(37.4, -122.1)
+         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(siliconValley,10f))
+
     }
 
     private fun showAlertDialog(latLng: LatLng) {
