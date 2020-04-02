@@ -10,9 +10,10 @@
         android:id="@+id/rvMaps"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginBottom="16dp"
         android:foregroundTint="#EDE9E9"
-        app:layout_constraintEnd_toEndOf="parent"
-        tools:layout_editor_absoluteY="-47dp" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fabCreateMap"
@@ -27,5 +28,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@android:drawable/ic_input_add" />
+
+    <TextView
+        android:id="@+id/tvkt"
+        android:layout_width="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:layout_height="wrap_content"
+        android:text="MADE WITH KOTLIN❤️"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
