@@ -42,6 +42,7 @@ class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+
         mapFragment.view?.let {
             Snackbar.make(it,"Long press to add a marker!", Snackbar.LENGTH_INDEFINITE)
                 .setAction("OK",{})
@@ -63,7 +64,10 @@ class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 Toast.makeText(this, "There must be at least one marker on the map", Toast.LENGTH_LONG).show()
                 return true
             }
-            val places = markers.map { marker -> Place(marker.title, marker.snippet, marker.position.latitude, marker.position.longitude) }
+            val places = markers.map { marker -> Place(marker.title,
+                marker.snippet,
+                marker.position.latitude,
+                marker.position.longitude) }
             val userMap = UserMap(intent.getStringExtra(EXTRA_MAP_TITLE), places)
             val data = Intent()
             data.putExtra(EXTRA_USER_MAP, userMap)

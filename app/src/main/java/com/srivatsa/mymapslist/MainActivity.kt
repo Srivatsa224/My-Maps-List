@@ -49,6 +49,7 @@ class MainActivity : AppCompatActivity() {
                 val i=Intent(this@MainActivity, DisplayMapActivity::class.java)
                 i.putExtra(EXTRA_USER_MAP,userMaps[position])
                 startActivity(i)
+                overridePendingTransition(R.anim.slide_out_left, R.anim.slide_in_right )
             }
         })
         rvMaps.adapter=mapAdapter
