@@ -2,6 +2,7 @@ package com.srivatsa.mymapslist
 
 import android.app.Activity
 import android.app.Instrumentation
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -17,10 +18,12 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.srivatsa.mymapslist.models.Place
 import com.srivatsa.mymapslist.models.UserMap
 import kotlinx.android.synthetic.main.activity_main.*
+import java.io.*
 
 const val EXTRA_USER_MAP="EXTRA_USER_MAP"
 private const val REQUEST_CODE=1234
 const val EXTRA_MAP_TITLE="EXTRA_MAP_TITLE"
+private const val FILENAME="UserMaps.data"
 
 private const val TAG="MainActivity"
 class MainActivity : AppCompatActivity() {
@@ -32,7 +35,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-         userMaps=generateSampleData().toMutableList()
+        userMaps= deserilizerUdserMaps(this).toMutableList()
+
 
         //Set layout manager on recycler view
         rvMaps.layoutManager=LinearLayoutManager(this)
@@ -55,7 +59,7 @@ class MainActivity : AppCompatActivity() {
        }
     }
 
-    private fun showAlertDialog() {
+     private fun showAlertDialog() {
         val mapFormView= LayoutInflater.from(this).inflate(R.layout.dialog_create_map, null)
         val dialog=
             AlertDialog.Builder(this)
@@ -87,18 +91,43 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode== REQUEST_CODE && resultCode==Activity.RESULT_OK)
+        if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
+
+            // Get new map data from data
+            val userMap = data?.getSerializableExtra(EXTRA_USER_MAP) as UserMap
+            Log.i(TAG, "onActivityResult: new map title ${userMap.title}")
+            userMaps.add(userMap)
+            mapAdapter.notifyItemInserted(userMaps.size - 1)
+            serizalizeUserMaps(this,userMaps)
+        }
         super.onActivityResult(requestCode, resultCode, data)
-        // Get new map data from data
-        val userMap=data?.getSerializableExtra(EXTRA_USER_MAP) as UserMap
-        Log.i(TAG,"onActivityResult: new map title ${userMap.title}")
-        userMaps.add(userMap)
-        mapAdapter.notifyItemInserted(userMaps.size-1)
+    }
+
+    private fun serizalizeUserMaps(context: Context, userMaps:List<UserMap>){
+        Log.i(TAG,"serizalizeUserMaps")
+        ObjectOutputStream(FileOutputStream(getDateFile(context))).use { it.writeObject(userMaps) }
+    }
+
+    private fun deserilizerUdserMaps(context: Context):List<UserMap>{
+        Log.i(TAG,"deserizalizeUserMaps")
+        val datafile= getDateFile(context)
+        if(!datafile.exists())
+        {
+            Log.i(TAG,"Data file doesn't exist yet")
+            return emptyList()
+        }
+        ObjectInputStream(FileInputStream(datafile)).use { return it.readObject() as List<UserMap> }
+    }
+
+    private  fun getDateFile(context: Context):File {
+        Log.i(TAG,"Getting file from directory ${context.filesDir}")
+        return File(context.filesDir, FILENAME)
     }
 
 
-    private fun generateSampleData(): List<UserMap> {
+    /*private fun generateSampleData(): List<UserMap> {
         return listOf(
             UserMap(
                 "Memories from University",
@@ -141,5 +170,5 @@ class MainActivity : AppCompatActivity() {
                 )
             )
         )
-    }
+    }*/
 }
