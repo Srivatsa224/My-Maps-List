@@ -24,8 +24,10 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.snackbar.Snackbar
 import com.srivatsa.mymapslist.models.Place
 import com.srivatsa.mymapslist.models.UserMap
+import kotlinx.android.synthetic.main.activity_create_maps.*
 
 private const val TAG="CreateMapsActivity"
+
 class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
@@ -49,9 +51,23 @@ class CreateMapsActivity : AppCompatActivity(), OnMapReadyCallback {
                 .setActionTextColor(ContextCompat.getColor(this, android.R.color.white))
                 .show()
         }
+
+        navFab.setOnClickListener {
+            getMyCurrentLocation()
+        }
+
     }
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    private fun getMyCurrentLocation() {
+
+        //val curLocation=LatLng(12.2, 76.6)
+        //mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(curLocation,10f ))
+        navFab.setOnClickListener {
+
+        }
+    }
+
+      override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_create_map, menu)
         return super.onCreateOptionsMenu(menu)
     }
